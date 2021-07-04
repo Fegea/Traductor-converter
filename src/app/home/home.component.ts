@@ -1,6 +1,6 @@
 
 import { Component, OnInit, NgZone } from '@angular/core';
-import { ElectronService } from '../providers/electron.service';
+import { ElectronService } from '../core/services/electron/electron.service';
 
 import * as XLSX from 'xlsx';
 
@@ -13,24 +13,23 @@ type AOA = any[][];
 })
 export class HomeComponent implements OnInit {
 
-  constructor(public electronService: ElectronService, public zone: NgZone) {
-  }
-
-  ngOnInit() {
-  }
-
-  data: AOA = [[1, 2], [3, 4]];
-  wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
-  fileName: string = "";
-  prefix: string = "language-";
-  nbrLang: Number = 0;
-  nbrTradKey: Number = 0;
-  fileUploaded: Boolean = false;
-  fileIsCreate: Boolean = false;
-  activatedDepth: Boolean = true;
+  public fileName = '';
+  public prefix = '';
+  public nbrLang = 0;
+  public nbrTradKey = 0;
+  fileUploaded = false;
+  fileIsCreate = false;
+  activatedDepth = true;
 
   xlsxObject: any = {};
   xlsFileData: any = {};
+  private data: AOA = [[1, 2], [3, 4]];
+  private wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
+
+  constructor(public electronService: ElectronService, public zone: NgZone) { }
+
+  ngOnInit() { }
+
 
   //
   //  Lecture du fichier xls
@@ -82,21 +81,21 @@ export class HomeComponent implements OnInit {
   formatLang(dataLangs: any) {
 
     //  Création des objects pour chaque langues
-    var objLangs = {};
-    for (var i = (this.activatedDepth) ? 2 : 1; i < dataLangs[0].length; i++) {
+    const objLangs = {};
+    for (let i = (this.activatedDepth) ? 2 : 1; i < dataLangs[0].length; i++) {
       objLangs[i] = {};
     }
 
     //  Boucle sur les clés
-    for (var i = 1; i < dataLangs.length; i++) {
-      var keyTrad = dataLangs[i][0];
+    for (let i = 1; i < dataLangs.length; i++) {
+      let keyTrad = dataLangs[i][0];
       if (keyTrad !== undefined) {
 
-        keyTrad = keyTrad.replace(/\s/g, "");  //  Replace espace
+        keyTrad = keyTrad.replace(/\s/g, '');  //  Replace espace
         keyTrad = keyTrad.toUpperCase();  //  UpperCase
 
         if (this.activatedDepth) {
-          for (var x = 2; x < dataLangs[0].length; x++) {
+          for (let x = 2; x < dataLangs[0].length; x++) {
             if (typeof objLangs[x][dataLangs[i][1]] === 'object') {
               objLangs[x][dataLangs[i][1]][keyTrad] = dataLangs[i][x];
             } else {
@@ -105,7 +104,7 @@ export class HomeComponent implements OnInit {
             }
           }
         } else {
-          for (var x = 1; x < dataLangs[0].length; x++) {
+          for (let x = 1; x < dataLangs[0].length; x++) {
             objLangs[x][keyTrad] = dataLangs[i][x];
           }
         }
@@ -114,8 +113,8 @@ export class HomeComponent implements OnInit {
     }
 
     //  Liaison des clés de traduction avec leurs code ISO
-    var finalLangObj = {};
-    for (var i = (this.activatedDepth) ? 2 : 1; i < dataLangs[0].length; i++) {
+    const finalLangObj = {};
+    for (let i = (this.activatedDepth) ? 2 : 1; i < dataLangs[0].length; i++) {
       finalLangObj[dataLangs[0][i]] = objLangs[i];
     }
 
@@ -129,31 +128,43 @@ export class HomeComponent implements OnInit {
   //
   //  Ouverure de la fenêtre "choose directory" + création des fichiers json
   //
-  createJsonFile() {
+  public createJsonFile() {
 
-    // var xlsxObject = this.formatLang(this.xlsFileData)
+    console.log('createJsonFile');
 
-    // // create dialog for choose a directory to save files
-    // this.electronService.remote.dialog.showOpenDialog(null, {
-    //   properties: ['openDirectory']
-    // }, (path): void => {
-    //   console.log("FullPath : " + path);
-    //   if (path) {
-    //     console.log(xlsxObject);
-    //     // create .json files
-    //     for (var index in xlsxObject.data) {
-    //       var jsonData = JSON.stringify(xlsxObject.data[index]),
-    //         fileName = this.prefix + index + ".json",
-    //         fullPath = path[0] + "/";
-    //       this.electronService.fs.writeFile(fullPath + fileName, jsonData, { encoding: "utf8" }, (): void => {
-    //         console.log("create json file : Ok");
-    //         this.zone.run(() => {
-    //           this.fileIsCreate = true;
-    //         });
-    //       });
-    //     }
-    //   }
-    // });
+    const xlsxObject = this.formatLang(this.xlsFileData);
+    console.log('xlsxObject', xlsxObject);
+
+    //create dialog for choose a directory to save files
+    this.electronService.remote.dialog.showOpenDialog(null, {
+      properties: ['openDirectory']
+    }, (path): void => {
+
+      console.log('FullPath : ' + path);
+      if (path) {
+        console.log(xlsxObject);
+        // create .json files
+        for (const index in xlsxObject.data) {
+
+          if (Object.prototype.hasOwnProperty.call(xlsxObject.data, index)) {
+
+            const jsonData = JSON.stringify(xlsxObject.data[index]);
+            const fileName = this.prefix + index + '.json';
+            const fullPath = path[0] + '/';
+
+            this.electronService.fs.writeFile(fullPath + fileName, jsonData, { encoding: 'utf8' }, (): void => {
+              console.log('create json file : Ok');
+              this.zone.run(() => {
+                this.fileIsCreate = true;
+              });
+            });
+          }
+
+        }
+      }
+
+    });
+
 
   }
 
