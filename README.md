@@ -1,9 +1,7 @@
 [![Angular Logo](https://www.vectorlogo.zone/logos/angular/angular-icon.svg)](https://angular.io/) [![Electron Logo](https://www.vectorlogo.zone/logos/electronjs/electronjs-icon.svg)](https://electronjs.org/)
 
-[![Linux Build][linux-build-badge]][linux-build]
-
+![![Linux Build][linux-build-badge]][linux-build]
 [![MacOS Build][macos-build-badge]][macos-build]
-
 [![Windows Build][windows-build-badge]][windows-build]
 
 # Introduction
@@ -15,14 +13,6 @@ Currently runs with:
 - Angular v12.0.5
 - Electron v13.0.1
 - Electron Builder v22.10.5
-
-With this sample, you can:
-
-- Run your app in a local development environment with Electron & Hot reload
-- Run your app in a production environment
-- Package your app into an executable file for Linux, Windows & Mac
-
-/!\ Hot reload only pertains to the renderer process. The main electron process is not able to be hot reloaded, only restarted.
 
 /!\ Angular 12.x CLI needs Node 11 or later to work correctly.
 

@@ -19,6 +19,9 @@
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "xlsx"
+            ],
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
