@@ -9,18 +9,19 @@
           </path>
         </svg>
       </figure>
-      <span>Choose a xls file…</span>
+      <span>{{ 'PAGES.HOME.CHOOSE_XLS_FILE' | translate }}</span>
     </label>
   </div>
 
   <div class="info-file">
-    <p class="titre">Information file</p>
+    <p class="titre">{{ 'PAGES.HOME.INFORMATION_FILE' | translate }}</p>
     <div>
-      <p>File name : <span>{{fileName}}</span></p>
-      <p>Number of languages : <span>{{nbrLang}}</span></p>
-      <p>Number of key : <span>{{nbrTradKey}}</span></p>
-      <p>Prefix : <input type="text" [(ngModel)]="prefix"></p>
-      <p>Enable depth : <input type="checkbox" [ngModel]="activatedDepth" (click)="activateDepth()"></p>
+      <p>{{ 'PAGES.HOME.FILE_NAME' | translate }} <span>{{fileName}}</span></p>
+      <p>{{ 'PAGES.HOME.NUMBER_OF_LANGUAGES' | translate }} <span>{{nbrLang}}</span></p>
+      <p>{{ 'PAGES.HOME.NUMBER_OF_KEY' | translate }}<span>{{nbrTradKey}}</span></p>
+      <p>{{ 'PAGES.HOME.PREFIX' | translate }} <input type="text" [(ngModel)]="prefix"></p>
+      <p>{{ 'PAGES.HOME.ENABLE_DEPTH' | translate }}<input type="checkbox" [ngModel]="activatedDepth"
+          (click)="activateDepth()"></p>
     </div>
   </div>
 
@@ -28,7 +29,8 @@
     <button type="button" name="button" class="btn btn-primary" (click)="createJsonFile()" [disabled]="!fileUploaded">
       <i class="glyphicon glyphicon-save" aria-hidden="true"></i>
     </button>
-    <span>Create .json files <i class="fa fa-check" aria-hidden="true" *ngIf="fileIsCreate"></i></span>
+    <span>{{ 'PAGES.HOME.CREATE_JSON_FILES' | translate }} <i class="fa fa-check" aria-hidden="true"
+        *ngIf="fileIsCreate"></i></span>
   </div>
 
 </div>

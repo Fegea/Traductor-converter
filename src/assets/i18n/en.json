@@ -1,12 +1,14 @@
 {
   "PAGES": {
-      "HOME": {
-          "TITLE": "App works !",
-          "GO_TO_DETAIL": "Go to Detail"
-      },
-      "DETAIL": {
-        "TITLE": "Detail page !",
-        "BACK_TO_HOME": "Back to Home"
+    "HOME": {
+      "CHOOSE_XLS_FILE": "Choose a xls file…",
+      "INFORMATION_FILE": "Information file",
+      "FILE_NAME": "File name :",
+      "NUMBER_OF_LANGUAGES": "Number of languages :",
+      "NUMBER_OF_KEY": "Number of key :",
+      "PREFIX": "Prefix",
+      "ENABLE_DEPTH": "Enable depth :",
+      "CREATE_JSON_FILES": "Create .json files"
     }
   }
 }
