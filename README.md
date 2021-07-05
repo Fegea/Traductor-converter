@@ -1,7 +1,9 @@
 [![Angular Logo](https://www.vectorlogo.zone/logos/angular/angular-icon.svg)](https://angular.io/) [![Electron Logo](https://www.vectorlogo.zone/logos/electronjs/electronjs-icon.svg)](https://electronjs.org/)
 
 [![Linux Build][linux-build-badge]][linux-build]
+
 [![MacOS Build][macos-build-badge]][macos-build]
+
 [![Windows Build][windows-build-badge]][windows-build]
 
 # Introduction

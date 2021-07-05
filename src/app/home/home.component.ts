@@ -1,11 +1,13 @@
 
 import { Component, OnInit, NgZone } from '@angular/core';
 import { ElectronService } from '../core/services/electron/electron.service';
-
 import * as XLSX from 'xlsx';
 
 type AOA = any[][];
 
+/**
+ *  Home Component
+ */
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -26,18 +28,22 @@ export class HomeComponent implements OnInit {
   private data: AOA = [[1, 2], [3, 4]];
   private wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
 
+  /**
+   * Creates an instance of HomeComponent.
+   */
   constructor(public electronService: ElectronService, public zone: NgZone) { }
 
   ngOnInit() { }
 
-
-  //
-  //  Lecture du fichier xls
-  //
+  /**
+   * Reading the xls file
+   */
   onFileChange(evt: any) {
     /* wire up file reader */
     const target: DataTransfer = <DataTransfer>(evt.target);
-    if (target.files.length !== 1) throw new Error('Cannot use multiple files');
+    if (target.files.length !== 1) {
+      throw new Error('Cannot use multiple files');
+    };
     const reader: FileReader = new FileReader();
     reader.onload = (e: any) => {
 
@@ -64,9 +70,9 @@ export class HomeComponent implements OnInit {
     reader.readAsBinaryString(target.files[0]);
   }
 
-  //
-  // Gestion de l'activation/désactivation de la profondeur
-  //
+  /**
+   * Management of depth activation / deactivation
+   */
   public activateDepth() {
     this.activatedDepth = !this.activatedDepth;
     this.xlsxObject = this.formatLang(this.xlsFileData);
@@ -75,9 +81,9 @@ export class HomeComponent implements OnInit {
     this.fileIsCreate = false;
   }
 
-  //
-  //  Formatage des données des langues
-  //
+  /**
+   * Formatting language data
+   */
   formatLang(dataLangs: any) {
 
     //  Création des objects pour chaque langues
@@ -99,7 +105,7 @@ export class HomeComponent implements OnInit {
             if (typeof objLangs[x][dataLangs[i][1]] === 'object') {
               objLangs[x][dataLangs[i][1]][keyTrad] = dataLangs[i][x];
             } else {
-              objLangs[x][dataLangs[i][1]] = {}
+              objLangs[x][dataLangs[i][1]] = {};
               objLangs[x][dataLangs[i][1]][keyTrad] = dataLangs[i][x];
             }
           }
@@ -125,49 +131,48 @@ export class HomeComponent implements OnInit {
     };
   }
 
-  //
-  //  Ouverure de la fenêtre "choose directory" + création des fichiers json
-  //
+  /**
+   * Ouverure de la fenêtre "choose directory" + création des fichiers json
+   */
   public createJsonFile() {
-
-    console.log('createJsonFile');
-
     const xlsxObject = this.formatLang(this.xlsFileData);
     console.log('xlsxObject', xlsxObject);
 
-    //create dialog for choose a directory to save files
-    this.electronService.remote.dialog.showOpenDialog(null, {
-      properties: ['openDirectory']
-    }, (path): void => {
+    // create dialog for choose a directory to save files
+    const dialogOptions = {
+      title: 'Choose a folder:',
+      properties: ['openDirectory', 'promptToCreate'],
+    };
+    this.electronService.remote.dialog.showOpenDialog(
+      dialogOptions
+    ).then((data) => {
+      if (data.canceled === false) {
+        const path: string = data.filePaths[0];
+        console.log('FullPath : ' + path);
 
-      console.log('FullPath : ' + path);
-      if (path) {
-        console.log(xlsxObject);
-        // create .json files
-        for (const index in xlsxObject.data) {
+        if (path) {
+          // create .json files
+          for (const index in xlsxObject.data) {
+            if (Object.prototype.hasOwnProperty.call(xlsxObject.data, index)) {
 
-          if (Object.prototype.hasOwnProperty.call(xlsxObject.data, index)) {
+              const jsonData = JSON.stringify(xlsxObject.data[index]);
+              const fileName = this.prefix + index + '.json';
+              const fullPath = path + '/';
 
-            const jsonData = JSON.stringify(xlsxObject.data[index]);
-            const fileName = this.prefix + index + '.json';
-            const fullPath = path[0] + '/';
-
-            this.electronService.fs.writeFile(fullPath + fileName, jsonData, { encoding: 'utf8' }, (): void => {
-              console.log('create json file : Ok');
-              this.zone.run(() => {
-                this.fileIsCreate = true;
+              console.log(fullPath + fileName);
+              this.electronService.fs.writeFile(fullPath + fileName, jsonData, { encoding: 'utf8' }, (): void => {
+                console.log('create json file : Ok');
+                this.zone.run(() => {
+                  this.fileIsCreate = true;
+                });
               });
-            });
+            }
           }
 
         }
+
       }
-
-    });
-
-
+    }).catch(err => console.log('Handle Error', err));
   }
-
-
 
 }
